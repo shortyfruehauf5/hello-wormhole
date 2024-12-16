@@ -1,38 +1,37 @@
-name: test
+name: Test Workflow
 
 on:
   push:
     branches:
       - main
-  pull_request: {}
+  pull_request:
 
 env:
   FOUNDRY_PROFILE: ci
 
 jobs:
   check:
+    name: Foundry Project
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
 
-    name: Foundry project
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: Install Foundry
+      - name: Set up Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
 
-      - name: Run Forge build
-        run: |
-          forge --version
-          forge build --sizes
-        id: build
+      - name: Display Foundry version
+        run: forge --version
+
+      - name: Build project with Foundry
+        run: forge build --sizes
 
       - name: Run Forge tests
-        run: |
-          forge test -vvv
-        id: test
+        run: forge test -vvv
